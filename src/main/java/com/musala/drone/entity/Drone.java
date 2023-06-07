@@ -1,19 +1,22 @@
 package com.musala.drone.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "drone")
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Drone {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "serial_number")
-    private Integer serialNumber;
+    private String serialNumber;
 
     private String model;
 
