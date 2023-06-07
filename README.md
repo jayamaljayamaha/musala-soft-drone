@@ -14,4 +14,6 @@ You can run it as a normal java project via your IDE, just run the main class vi
 You can run via gradle by executing following gradle wrapper command
 gradlew bootRun
 
-Now the service is running on your machine on port 8080
+Now the service is running on your machine on port 8080, I have added the swagger so after you start the application
+you can access the swagger API doc from following link
+http://localhost:8080/swagger-ui.html
