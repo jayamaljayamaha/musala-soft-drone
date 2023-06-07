@@ -15,12 +15,15 @@ import com.musala.drone.util.ValidationUtils;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class DroneService {
@@ -98,8 +101,11 @@ public class DroneService {
     }
 
     private List<DroneResponseDto> getDronesByAvailableFor(String availableFor) {
-        Set<Drone> dronesAvailableForLoading = this.droneRepository.getDronesByStatuses(Set.of(DroneState.IDLE.name(), DroneState.LOADED.name()));
-        return dronesAvailableForLoading.stream().map(drone -> DroneResponseDto.builder().drone(drone).isSuccess(true).build()).toList();
+        if(availableFor.equalsIgnoreCase("loading")){
+            Set<Drone> dronesAvailableForLoading = this.droneRepository.getDronesByStatuses(Set.of(DroneState.IDLE.name(), DroneState.LOADED.name()));
+            return dronesAvailableForLoading.stream().map(drone -> DroneResponseDto.builder().drone(drone).isSuccess(true).build()).toList();
+        }
+        return List.of();
     }
 
     private DroneResponseDto getDronesByBatteryLevel(String batteryCapacity) {
@@ -112,4 +118,9 @@ public class DroneService {
         }
     }
 
+    @Scheduled(fixedDelay = 1, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
+    public void checkDronesBatteryLevel(){
+        List<Drone> allDrones = this.droneRepository.findAll();
+        allDrones.forEach(drone -> System.out.println(MessageFormat.format("Drone: {0}, BatteryLevel: {1}%", drone.getSerialNumber(), drone.getBatteryCapacity())));
+    }
 }
